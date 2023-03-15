@@ -29,15 +29,11 @@ async def generate_image(ctx, *, prompt: str):
     )
     image_url = response['data'][0]['url']
 
-    async with ctx.typing():
-        async with requests.get(image_url) as r:
-            if r.status_code != 200:
-                await ctx.send('Failed to generate an image. Please try again.')
-                return
+    async with aiohttp.ClientSession() as session:
+        async with session.get(image_url) as resp:
+            image_data = await resp.read()
 
-            image_data = r.content
-
-        with io.BytesIO(image_data) as image_io:
-            await ctx.send(file=discord.File(image_io, 'generated_image.png'))
+    image_file = discord.File(io.BytesIO(image_data), filename="generated_image.png")
+    await ctx.send(file=image_file)
 
 bot.run(DISCORD_TOKEN)
