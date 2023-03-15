@@ -4,6 +4,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import requests
+import io
+
 
 load_dotenv()
 DISCORD_TOKEN = os.environ['DALL-E_KEY']
